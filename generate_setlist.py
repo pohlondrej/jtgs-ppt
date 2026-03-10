@@ -3,12 +3,14 @@ import argparse
 import configparser
 from datetime import datetime
 from pptx import Presentation
+from pptx.enum.shapes import MSO_SHAPE_TYPE
+import io
 
 def get_config():
     config = configparser.ConfigParser()
     config_path = os.path.expanduser('~/.config/jtgs-ppt/jtgs.conf')
     
-    # Defaults if file is missing
+    # Defaults if config file is missing
     defaults = {
         'song_folder': './songs',
         'intro_slide': './intro.pptx',
@@ -30,7 +32,21 @@ def append_slides(source_prs, target_prs):
         slide_layout = target_prs.slide_layouts[6]
         new_slide = target_prs.slides.add_slide(slide_layout)
         for shape in slide.shapes:
-            new_slide.shapes._spTree.append(shape.element)
+            if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
+                # For pictures, we must copy the image blob and add it properly
+                # to the target slide to handle relationships and media parts.
+                image_stream = io.BytesIO(shape.image.blob)
+                new_slide.shapes.add_picture(
+                    image_stream, 
+                    shape.left, 
+                    shape.top, 
+                    shape.width, 
+                    shape.height
+                )
+            else:
+                # For other shapes, attempt to copy the XML element directly.
+                # Note: This may still have issues with shapes that have relationships.
+                new_slide.shapes._spTree.append(shape.element)
 
 def main():
     cfg = get_config()
