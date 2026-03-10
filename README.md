@@ -15,13 +15,18 @@ Combines multiple PPTX songs into a single presentation with intro and transitio
 
 **Command:**
 ```bash
-python3 generate_setlist.py -s song_a song_b -o output.pptx
+python generate_setlist.py -s song_a song_b -o output.pptx
+```
+**Example usage:**
+```bash
+python generate_setlist.py -s Waymaker HolySpirit AmazingGrace
 ```
 
-- **Arguments:**
-    - `-s, --songs`: List of song filenames (without `.pptx` extension).
-    - `-o, --output`: Optional output filename (default: `JTGS_YYYY_MM_DD.pptx`).
-- **Configuration:**
+**Arguments:**
+- `-s, --songs`: List of song filenames (without `.pptx` extension).
+- `-o, --output`: Optional output filename (default: `JTGS_YYYY_MM_DD.pptx`).
+
+**Configuration:**
     Uses `~/.config/jtgs-ppt/jtgs.conf` for paths to song folder, intro, and transition slides.
 
 ### `sanitize_pptx.py`
@@ -29,8 +34,15 @@ Batch processes presentations to remove slide transitions and map fonts (e.g., A
 
 **Command:**
 ```bash
-python3 sanitize_pptx.py
+python sanitize_pptx.py
 ```
 
-- **Configuration:**
-    Directly edit `INPUT_FOLDER` and `OUTPUT_FOLDER` within the script to set source and destination directories.
+**Configuration:** Directly edit `INPUT_FOLDER` and `OUTPUT_FOLDER` within the script to set source and destination directories.
+
+## LibreOffice UI Scaling Fix
+
+Copy `libreoffice.conf` to `~/.config/environment.d/` and log out & in again. LibreOffice should be scaled properly.
+
+**WARNING**: This will make ALL Qt apps scaled as well.
+
+**TODO**: Find an alternative.
